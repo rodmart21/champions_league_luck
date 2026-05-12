@@ -301,7 +301,7 @@ def plot_top10_luck_over_time(master: pd.DataFrame):
 
     ax.set_xlabel("Season")
     ax.set_ylabel("Luck Score")
-    ax.set_title("Luck Over Time — Top 10 European Clubs", pad=12)
+    ax.set_title("Luck Over Time — Top European Clubs", pad=12)
     ax.legend(facecolor=DARK, edgecolor="#2a3f5f", fontsize=8.5,
               ncol=2, loc="upper right", framealpha=0.85)
     ax.grid(axis="y")
