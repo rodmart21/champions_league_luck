@@ -272,22 +272,15 @@ def plot_top10_luck_over_time(master: pd.DataFrame):
         "Manchester City",
         "Liverpool",
         "Atlético Madrid",
-        "Juventus",
-        "Inter",
-        "Dortmund",
     ]
-    # Rich, distinct palette for 10 lines
     TEAM_COLORS = {
         "Paris Saint-Germain": "#003f7f",   # deep blue
         "Bayern Munich":       "#dc052d",   # Bayern red
         "Real Madrid":         "#f5d200",   # gold
         "Barcelona":           "#a50044",   # Barça crimson
         "Manchester City":     "#6cabdd",   # sky blue
-        "Liverpool":           "#c8102e",   # Liverpool red (lighter)
+        "Liverpool":           "#c8102e",   # Liverpool red
         "Atlético Madrid":     "#e8321a",   # Atleti orange-red
-        "Juventus":            "#f5f5f5",   # white
-        "Inter":               "#0068a8",   # Inter blue
-        "Dortmund":            "#fde100",   # BVB yellow
     }
 
     all_seasons = sorted(master["season"].unique())
