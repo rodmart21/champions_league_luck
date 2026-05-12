@@ -26,7 +26,7 @@ from scipy import stats
 from statsmodels.stats.multitest import multipletests
 
 DATA_PATH = Path("data/combined/master.csv")
-MIN_SEASONS = 2  # minimum seasons for a team to appear in the summary
+MIN_SEASONS = 5  # minimum seasons for a team to appear in the summary
 
 
 # ---------------------------------------------------------------------------
