@@ -261,6 +261,64 @@ def plot_luck_distribution(master: pd.DataFrame):
 
 
 # ---------------------------------------------------------------------------
+# Fig 8: Luck over time — top 10 European clubs
+# ---------------------------------------------------------------------------
+def plot_top10_luck_over_time(master: pd.DataFrame):
+    TEAMS = [
+        "Paris Saint-Germain",
+        "Bayern Munich",
+        "Real Madrid",
+        "Barcelona",
+        "Manchester City",
+        "Liverpool",
+        "Atlético Madrid",
+        "Juventus",
+        "Inter",
+        "Dortmund",
+    ]
+    # Rich, distinct palette for 10 lines
+    TEAM_COLORS = {
+        "Paris Saint-Germain": "#003f7f",   # deep blue
+        "Bayern Munich":       "#dc052d",   # Bayern red
+        "Real Madrid":         "#f5d200",   # gold
+        "Barcelona":           "#a50044",   # Barça crimson
+        "Manchester City":     "#6cabdd",   # sky blue
+        "Liverpool":           "#c8102e",   # Liverpool red (lighter)
+        "Atlético Madrid":     "#e8321a",   # Atleti orange-red
+        "Juventus":            "#f5f5f5",   # white
+        "Inter":               "#0068a8",   # Inter blue
+        "Dortmund":            "#fde100",   # BVB yellow
+    }
+
+    all_seasons = sorted(master["season"].unique())
+
+    fig, ax = plt.subplots(figsize=(13, 6))
+
+    for team in TEAMS:
+        df_t = master[master["team"] == team].sort_values("season")
+        color = TEAM_COLORS[team]
+        lw = 2.2
+        ax.plot(df_t["season"], df_t["luck_score"],
+                marker="o", label=team, color=color,
+                linewidth=lw, markersize=5.5, zorder=3)
+
+    ax.axhline(0, color=WHITE, linewidth=0.8, linestyle="--", alpha=0.5)
+    ax.fill_between(all_seasons,  0.15,  0.5, alpha=0.04, color=GREEN)
+    ax.fill_between(all_seasons, -0.5,  -0.15, alpha=0.04, color=RED)
+
+    ax.set_xlabel("Season")
+    ax.set_ylabel("Luck Score")
+    ax.set_title("Luck Over Time — Top 10 European Clubs", pad=12)
+    ax.legend(facecolor=DARK, edgecolor="#2a3f5f", fontsize=8.5,
+              ncol=2, loc="upper right", framealpha=0.85)
+    ax.grid(axis="y")
+    plt.xticks(rotation=30)
+    fig.tight_layout()
+    _save(fig, "fig8_top10_luck_over_time")
+    return fig
+
+
+# ---------------------------------------------------------------------------
 # Main — generate all figures
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
@@ -274,5 +332,6 @@ if __name__ == "__main__":
     plot_autocorrelation(master)
     plot_attack_vs_defense(summary)
     plot_luck_distribution(master)
+    plot_top10_luck_over_time(master)
 
     print("\nAll figures saved to figures/")
