@@ -52,23 +52,27 @@ def _save(fig, name):
 # ---------------------------------------------------------------------------
 # Fig 1: Luck leaderboard — top 15 luckiest + unluckiest (± CI)
 # ---------------------------------------------------------------------------
-def plot_leaderboard(summary: pd.DataFrame, n: int = 15):
-    top = summary.nlargest(n, "mean_luck")
-    bot = summary.nsmallest(n, "mean_luck").sort_values("mean_luck")
-    df = pd.concat([bot, top]).reset_index(drop=True)
+def plot_leaderboard(summary: pd.DataFrame):
+    df = summary.sort_values("mean_luck", ascending=True).reset_index(drop=True)
 
     colors = [GREEN if v >= 0 else RED for v in df["mean_luck"]]
     xerr_lo = (df["mean_luck"] - df["ci_lower"]).clip(lower=0)
     xerr_hi = (df["ci_upper"] - df["mean_luck"]).clip(lower=0)
 
-    fig, ax = plt.subplots(figsize=(10, len(df) * 0.42 + 1))
+    fig, ax = plt.subplots(figsize=(10, len(df) * 0.44 + 1))
     ax.barh(df["team"], df["mean_luck"], color=colors, alpha=0.85, height=0.65)
     ax.errorbar(df["mean_luck"], df["team"],
                 xerr=[xerr_lo, xerr_hi],
                 fmt="none", color=WHITE, linewidth=1.1, capsize=3, alpha=0.7)
+    for _, row in df.iterrows():
+        offset = 0.004 if row["mean_luck"] >= 0 else -0.004
+        ha = "left" if row["mean_luck"] >= 0 else "right"
+        ax.text(row["mean_luck"] + offset, row["team"],
+                f'{row["mean_luck"]:+.2f}', va="center", ha=ha,
+                fontsize=7, color=WHITE)
     ax.axvline(0, color=WHITE, linewidth=0.8)
     ax.set_xlabel("Mean Composite Luck Score")
-    ax.set_title(f"UCL Luck Leaderboard — Top & Bottom {n} Teams\n±95 % Bootstrap CI", pad=10)
+    ax.set_title(f"UCL Luck Leaderboard — All Teams (≥5 seasons)\n±95% Bootstrap CI", pad=10)
     ax.grid(axis="x")
     fig.tight_layout()
     _save(fig, "fig1_leaderboard")
@@ -274,13 +278,13 @@ def plot_top10_luck_over_time(master: pd.DataFrame):
         "Atlético Madrid",
     ]
     TEAM_COLORS = {
-        "Paris Saint-Germain": "#003f7f",   # deep blue
-        "Bayern Munich":       "#dc052d",   # Bayern red
+        "Paris Saint-Germain": "#1a6fc4",   # strong blue
+        "Bayern Munich":       "#e8000d",   # red
         "Real Madrid":         "#f5d200",   # gold
-        "Barcelona":           "#a50044",   # Barça crimson
-        "Manchester City":     "#6cabdd",   # sky blue
-        "Liverpool":           "#c8102e",   # Liverpool red
-        "Atlético Madrid":     "#e8321a",   # Atleti orange-red
+        "Barcelona":           "#a855f7",   # purple
+        "Manchester City":     "#7ec8e3",   # sky blue
+        "Liverpool":           "#f97316",   # orange
+        "Atlético Madrid":     "#ec4899",   # pink/magenta
     }
 
     all_seasons = sorted(master["season"].unique())
@@ -319,6 +323,7 @@ if __name__ == "__main__":
     summary = pd.read_csv("data/combined/luck_summary.csv")
 
     plot_leaderboard(summary)
+
     plot_component_breakdown(summary)
     plot_season_heatmap(master)
     plot_luck_over_time(master, summary)
